@@ -38,7 +38,31 @@ typedef enum {STARTTOKEN,
               INT, CHAR,        // types
               IF,               // keyword
               NUM,              // integer literal
-              // TODO: add more here
+              ID,
+              RETURN,
+              BREAK,
+              WHILE,
+              ELSE,
+              READ,
+              FOR,
+              LT,
+              GT,
+              GE,
+              LE,
+              EQ,
+              AND,
+              OR,
+              WRITE,
+              WRITELN,
+              LPAREN,
+              RPAREN,
+              LBRAC,
+              RBRAC,
+              LSQBRAC,
+              RSQBRAC,
+              SEMICOL,
+              ASSIGN,
+              DIVIDE,
               DONE,             // special "token" indicates LA is done
               ENDTOKEN } tokenT;
 

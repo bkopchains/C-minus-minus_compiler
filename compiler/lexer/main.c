@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
       lexer_emit(token, tokenval);
   }
   if( token == LEXERROR ) {
-      lexer_error("invalid symbol", tokenval);	
+      lexer_error("invalid symbol", tokenval);  
       exit(1);     /*  unsuccessful termination  */
   }
   fclose(fd);

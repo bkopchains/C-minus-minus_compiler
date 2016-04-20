@@ -1,0 +1,5 @@
+main() {
+  while(m > n){
+  	x = m / n;
+  }
+}

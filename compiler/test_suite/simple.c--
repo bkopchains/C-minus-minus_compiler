@@ -1,5 +1,7 @@
 
 main() {
 
-  write 8+9;
+  if(x && y){
+  	write 8>9;
+  }
 }
