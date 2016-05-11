@@ -1,6 +1,6 @@
 /* Updated by Taylor Ellsworth
  * Due Date: 4/20/2016
-/
+ */
 
 /* The lexical analyzer for the C-- Programming Language
  */
@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "lexer.h"
+#include <string.h> /* memset */
 
 
 // these are likely values that will be needed by the parser, so 
@@ -23,6 +24,12 @@ char *nonIDs[11] = {"else", "if", "for", "while", "break", "return",
 
 // function prototypes:
 static void print_lineno();  // static limits its scope to only in this .c file
+
+int character; 
+int fullnumber;
+int isdigit();
+char isalpha();
+int isalnum();
 
 /***************************************************************************/
 /* 
@@ -45,7 +52,7 @@ int lexan(FILE *fd) {
   lexer_debug1("in lexan, lineno = %d\n", src_lineno);
   lexer_debug1("in lexan, message = %s\n", "hello there");
 
-int character;
+//int character;
 while(character != DONE && character != LEXERROR) 
 {
   character = fgetc(fd);
@@ -64,20 +71,29 @@ while(character != DONE && character != LEXERROR)
       }
       character = fgetc(fd);
     }
-    // else if((character = fgetc(fd)) == '/'){
-    //   while((character = fgetc(fd))!= '\n'){
-    //     ;
-    //   }
-    //   character = fgetc(fd);
-    // }
+    else if((character  == '/')){
+      while((character = fgetc(fd)) != '\n'){
+        ;
+      }
+      character = fgetc(fd);
+    }  
     else{
       return DIVIDE;
     }
   }
+  
   else if (isdigit(character))
-  { // NUM token
-    tokenval = character;
-    return NUM;
+  {
+    fullnumber = character - '0';
+    character = fgetc(fd);    
+    while(isdigit(character = fgetc(fd))){
+      fullnumber = 10 * character - '0';
+      //fullnumber = fullnumber - '0';
+      //character=fgetc(fd);
+    }
+
+    printf("NUM.%d\n", character);
+    //return NUM;
   }
   
   //if the first character is &, it checks the second character to see if it is &.
@@ -88,7 +104,7 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       ungetc(character, fd);
-      lexer_error(character,fd);
+      lexer_error(character, fd);
     }
   }
 
@@ -101,7 +117,7 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       ungetc(character, fd);
-      lexer_error(character,fd);
+      lexer_error(character, fd);
     }
   }
 
@@ -141,11 +157,57 @@ while(character != DONE && character != LEXERROR)
       return ASSIGN;
     }
   }
+
+  else if(character == ';'){
+    return SEMICOL;
+  }
+
+  else if(character == ':'){
+    return COLON;
+  }
+
+  else if(character == ','){
+    return COMMA;
+  }
+
+  else if(character == '+'){
+    return PLUS;
+  }
+
+  else if(character == '-'){
+    return MINUS;
+  }
+
+  else if(character == '*'){
+    return MULT;
+  }
+
+  else if(character == '('){
+    return LPAREN;
+  }
+
+  else if(character == ')'){
+    return RPAREN;
+  }
+
+  else if(character == '{'){
+    return LBRACE;
+  }
+
+  else if(character == '}'){
+    return RBRACE;
+  }
+
+  else if(character == ']'){
+    return LBRACK;
+  }
+
+  else if(character == '['){
+    return RBRACK;
+  }
   
  //Determines the correct keyword and returns it 
  else if (isalpha(character)){
-    
-    int isID = 0;
     char word[100];
     memset(&word[0], 0, sizeof(word));
     char append[2];
@@ -192,7 +254,8 @@ while(character != DONE && character != LEXERROR)
       return WRITELN;
     }
     else{
-      tokenval = *word;
+      //tokenval = *word;
+      printf("ID.%s\n", word);
       return ID;
     }
   }

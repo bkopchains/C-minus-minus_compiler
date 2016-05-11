@@ -37,7 +37,7 @@ void lexer_emit(int t, int tval) {
       printf("READ\n");
       break;
     case NUM:
-      printf("NUM.%c\n", tval); 
+      //printf("NUM.%c\n", tval); 
       break;
     case DONE:
       printf("DONE\n");
@@ -49,7 +49,7 @@ void lexer_emit(int t, int tval) {
       printf("WRITELN\n");
       break;
      case ID:
-      printf("ID.%d\n", tval);
+      //printf("ID.%d\n", tval);
       break;
     case EQ:
       printf("EQ\n");
@@ -63,43 +63,43 @@ void lexer_emit(int t, int tval) {
     case FOR:
       printf("FOR\n");
       break; 
-    case ';':
+    case SEMICOL:
       printf("SEMICOL\n");
       break;
-    case ':':
+    case COLON:
       printf("COLON\n");
       break;
-    case ',':
+    case COMMA:
       printf("COMMA\n");
       break;
-    case '+':
+    case PLUS:
       printf("PLUS\n");
       break;
-    case '-':
+    case MINUS:
       printf("MINUS\n");
       break;
     case DIVIDE:
       printf("DIVIDE\n");
       break;
-    case '*':
+    case MULT:
       printf("MULT\n");
       break;
-    case '(':
+    case LPAREN:
       printf("LPAREN\n");
       break;
-    case ')':
+    case RPAREN:
       printf("RPAREN\n");
       break;  
-    case '{':
+    case LBRACE:
       printf("LBRAC\n");
       break;
-    case '[':
-      printf("LSQBRAC\n");
+    case LBRACK:
+      printf("LBRACK\n");
       break;
-    case ']':
-      printf("RSQBRAC\n");
+    case RBRACK:
+      printf("RBRAC\n");
       break;
-    case '}':
+    case RBRACE:
       printf("RBRAC\n");
       break;  
     case LT:
