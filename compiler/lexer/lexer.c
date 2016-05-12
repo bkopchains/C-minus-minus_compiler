@@ -84,16 +84,17 @@ while(character != DONE && character != LEXERROR)
   
   else if (isdigit(character))
   {
-    fullnumber = character - '0';
-    character = fgetc(fd);    
+    int fullnumber = character - '0';   
     while(isdigit(character = fgetc(fd))){
-      fullnumber = 10 * character - '0';
-      //fullnumber = fullnumber - '0';
+      fullnumber = 10 * fullnumber;
+      fullnumber = fullnumber + (character) - '0';
       //character=fgetc(fd);
     }
 
-    printf("NUM.%d\n", character);
-    //return NUM;
+    ungetc(character,fd);
+    tokenval = fullnumber;
+    
+    return NUM;
   }
   
   //if the first character is &, it checks the second character to see if it is &.
@@ -104,7 +105,7 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       ungetc(character, fd);
-      lexer_error(character, fd);
+      //lexer_error(character, fd);
     }
   }
 
@@ -117,7 +118,7 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       ungetc(character, fd);
-      lexer_error(character, fd);
+      //lexer_error(character, fd);
     }
   }
 
@@ -198,17 +199,21 @@ while(character != DONE && character != LEXERROR)
     return RBRACE;
   }
 
-  else if(character == ']'){
+  else if(character == '['){
     return LBRACK;
   }
 
-  else if(character == '['){
+  else if(character == ']'){
     return RBRACK;
+  }
+
+  else if(character == '!'){
+    return NOT;
   }
   
  //Determines the correct keyword and returns it 
  else if (isalpha(character)){
-    char word[100];
+    char word[MAXLEXSIZE];
     memset(&word[0], 0, sizeof(word));
     char append[2];
     append[0] = character;
@@ -255,7 +260,9 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       //tokenval = *word;
-      printf("ID.%s\n", word);
+      //printf("ID.%s\n", word);
+      //return ID;
+      strncpy(lexbuf, word, MAXLEXSIZE);
       return ID;
     }
   }

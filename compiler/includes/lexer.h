@@ -67,6 +67,7 @@ typedef enum {STARTTOKEN,
               PLUS,
               COMMA,
               MINUS,
+              NOT,
               MULT,
               DONE,             // special "token" indicates LA is done
               ENDTOKEN } tokenT;

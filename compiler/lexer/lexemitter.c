@@ -37,7 +37,7 @@ void lexer_emit(int t, int tval) {
       printf("READ\n");
       break;
     case NUM:
-      //printf("NUM.%c\n", tval); 
+      printf("NUM.%c\n", tval); 
       break;
     case DONE:
       printf("DONE\n");
@@ -50,6 +50,7 @@ void lexer_emit(int t, int tval) {
       break;
      case ID:
       //printf("ID.%d\n", tval);
+      printf("ID.%s\n", lexbuf); 
       break;
     case EQ:
       printf("EQ\n");
@@ -91,16 +92,16 @@ void lexer_emit(int t, int tval) {
       printf("RPAREN\n");
       break;  
     case LBRACE:
-      printf("LBRAC\n");
+      printf("LBRACE\n");
       break;
     case LBRACK:
       printf("LBRACK\n");
       break;
     case RBRACK:
-      printf("RBRAC\n");
+      printf("RBRACK\n");
       break;
     case RBRACE:
-      printf("RBRAC\n");
+      printf("RBRACE\n");
       break;  
     case LT:
       printf("LT\n");
@@ -116,6 +117,9 @@ void lexer_emit(int t, int tval) {
       break;
     case ASSIGN:
       printf("ASSIGN\n");
+      break;
+    case NOT:
+      printf("NOT\n");
       break;
     default:
       printf("token %c\n", tval); 

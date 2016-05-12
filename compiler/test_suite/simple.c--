@@ -1,6 +1,8 @@
-//Hi how are you
+char y(int x, char t[]){
+ int phillip[17];
+}
 
-
+int
 
 main() {
   hello = 5;
