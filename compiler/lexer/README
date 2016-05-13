@@ -1,4 +1,4 @@
-* first, run: make depend 
+.* first, run: make depend 
   ignore the warnings about not being able to find stddef.h etc.
 
 * to compile: make 

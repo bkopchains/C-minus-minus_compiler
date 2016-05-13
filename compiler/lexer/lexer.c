@@ -26,7 +26,6 @@ char *nonIDs[11] = {"else", "if", "for", "while", "break", "return",
 static void print_lineno();  // static limits its scope to only in this .c file
 
 int character; 
-int fullnumber;
 int isdigit();
 char isalpha();
 int isalnum();
@@ -52,8 +51,9 @@ int lexan(FILE *fd) {
   lexer_debug1("in lexan, lineno = %d\n", src_lineno);
   lexer_debug1("in lexan, message = %s\n", "hello there");
 
-//int character;
-while(character != DONE && character != LEXERROR) 
+
+
+while(character != DONE && character != LEXERROR)  
 {
   character = fgetc(fd);
   if(character == ' ' || character == '\t')
@@ -84,16 +84,15 @@ while(character != DONE && character != LEXERROR)
   
   else if (isdigit(character))
   {
-    int fullnumber = character - '0';   
-    while(isdigit(character = fgetc(fd))){
+    int fullnumber = character - '0';
+    character = fgetc(fd);   
+    while(isdigit(character)){
       fullnumber = 10 * fullnumber;
-      fullnumber = fullnumber + (character) - '0';
-      //character=fgetc(fd);
+      fullnumber = fullnumber + character;
+      fullnumber = fullnumber - '0';
     }
-
     ungetc(character,fd);
     tokenval = fullnumber;
-    
     return NUM;
   }
   
@@ -118,7 +117,7 @@ while(character != DONE && character != LEXERROR)
     }
     else{
       ungetc(character, fd);
-      //lexer_error(character, fd);
+
     }
   }
 
@@ -270,9 +269,6 @@ while(character != DONE && character != LEXERROR)
       return WRITELN;
     }
     else{
-      //tokenval = *word;
-      //printf("ID.%s\n", word);
-      //return ID;
       strncpy(lexbuf, word, MAXLEXSIZE);
       return ID;
     }
@@ -283,6 +279,7 @@ while(character != DONE && character != LEXERROR)
     return character;
   }
 }
+
 }
 
  

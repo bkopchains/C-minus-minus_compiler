@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
 }
 /*********************************************************************/
 
+
 // this is an example of how to define output strings corresponding to 
 // different ast node state that is used by the print_ast_node function:
 static char *t_strings[] = {"STARTTOKEN",

@@ -37,7 +37,7 @@ void lexer_emit(int t, int tval) {
       printf("READ\n");
       break;
     case NUM:
-      printf("NUM.%c\n", tval); 
+      printf("NUM.%d\n", tokenval); 
       break;
     case DONE:
       printf("DONE\n");
@@ -49,7 +49,6 @@ void lexer_emit(int t, int tval) {
       printf("WRITELN\n");
       break;
      case ID:
-      //printf("ID.%d\n", tval);
       printf("ID.%s\n", lexbuf); 
       break;
     case EQ:

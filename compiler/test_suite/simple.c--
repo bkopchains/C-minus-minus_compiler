@@ -1,1 +1,3 @@
-int y(
+int y(int x[], char y){
+char t;
+	}
