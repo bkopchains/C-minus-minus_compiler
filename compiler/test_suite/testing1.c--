@@ -1,4 +1,2 @@
-int y;
-char ch;
-int main() {}
+int y[15];
 
