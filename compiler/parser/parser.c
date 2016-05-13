@@ -122,7 +122,7 @@ static void program(FILE *fd, ast_node *parent) {
       ast_node *n;
       s = create_new_ast_node_info(INT, 0, 0, 0, 0);
       n = create_ast_node(s);
-      add_child_node(parent, n);
+      add_child_node(program, n);
 
     }
     else{
@@ -139,15 +139,12 @@ static void program(FILE *fd, ast_node *parent) {
     if(lookahead == ID){
       printf("MATCH: ID.%s\n", lexbuf);
       
-
-      
       ast_info *s;
       ast_node *n;
       s = create_new_ast_node_info(ID, 0, 0, 0, 0);
       n = create_ast_node(s);
       add_child_node(parent, n);
       
-
 
       lookahead = lexan(fd);
       PROG1(fd, parent);
