@@ -1,5 +1,1 @@
-main() {
-  while(m > n){
-  	x = m / n;
-  }
-}
+x = 8;

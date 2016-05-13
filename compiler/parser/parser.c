@@ -15,8 +15,8 @@
 
 static void program(FILE *fd, ast_node *parent);
 static void parser_error(char *err_string);
-void PROG1(FILE *fd);
-void PROG2(FILE *fd);
+void PROG1(FILE *fd, ast_node *parent);
+void PROG2(FILE *fd, ast_node *parent);
 void FDL1(FILE *fd);
 void PDL(FILE *fd);
 void PDL1(FILE *fd);
@@ -27,9 +27,18 @@ void VDL1(FILE *fd);
 void epsilon(FILE *fd);
 void StmtList(FILE *fd);
 void Stmt(FILE *fd);
-
-
-void FDL(FILE *fd);
+void StmtList1(FILE *fd);
+void Expr(FILE *fd);
+void E0(FILE *fd);
+void E0PRIME(FILE *fd);
+void E1(FILE *fd);
+void E1PRIME(FILE *fd);
+void E2(FILE *fd);
+void E2PRIME(FILE *fd);
+void E3(FILE *fd);
+void E3PRIME(FILE *fd);
+void E4(FILE *fd);
+void E4PRIME(FILE *fd);
 void E5(FILE *fd);
 void E5PRIME(FILE *fd);
 void E6(FILE *fd);
@@ -39,22 +48,15 @@ void E8(FILE *fd);
 void E8PRIME(FILE *fd);
 void ExprList(FILE *fd);
 void ELPRIME(FILE *fd);
+void FDL(FILE *fd);
+
 
 
 char lookahead;  // stores next token returned by lexer
                 // you may need to change its type to match your implementation
                 
 ast ast_tree;   // the abstract syntax tree
-// void PROG();
-// void PROG1();
-// void PROG2();
-// void FDL1();
-// void FDL();
-// void VDL();
-// void VDL1();
-// void PDL();
-// void PDL1();
-// void PDL2();
+
 
 /**************************************************************************/
 /*
@@ -110,31 +112,61 @@ static void parser_error(char *err_string) {
  */
 static void program(FILE *fd, ast_node *parent) {
 
+
+
   if(lookahead == INT || lookahead == CHAR){
     if(lookahead == INT){
       printf("MATCH: INT\n");
+
+      ast_info *s;
+      ast_node *n;
+      s = create_new_ast_node_info(INT, 0, 0, 0, 0);
+      n = create_ast_node(s);
+      add_child_node(parent, n);
+
     }
     else{
       printf("MATCH: CHAR\n");
+
+      ast_info *s;
+      ast_node *n;
+      s = create_new_ast_node_info(CHAR, 1, 1, 1, 1);
+      n = create_ast_node(s);
+      add_child_node(parent, n);
     }
     //printf("MATCH: %c\n", lookahead);
     lookahead = lexan(fd);
     if(lookahead == ID){
       printf("MATCH: ID.%s\n", lexbuf);
+      
+
+      
+      ast_info *s;
+      ast_node *n;
+      s = create_new_ast_node_info(ID, 0, 0, 0, 0);
+      n = create_ast_node(s);
+      add_child_node(parent, n);
+      
+
+
       lookahead = lexan(fd);
-      PROG1(fd);
+      PROG1(fd, parent);
+
+
     }
     else{
-      printf("Error: Unexpexted Symbol\n");
+      printf("Error1: Unexpexted Symbol\n");
     }
   }
   else{
-    printf("Error: Unexpexted Symbol\n");
+    printf("Error2: Unexpexted Symbol\n");
   }
 }
 
+
+
 //PROG1 -> ; PROG| [num]; PROG | PROG2;
-void PROG1(FILE *fd){
+void PROG1(FILE *fd, ast_node *parent){
 
   if(lookahead == SEMICOL){
     printf("MATCH: SEMICOL\n");
@@ -156,33 +188,42 @@ void PROG1(FILE *fd){
           program(fd, lookahead);
         }
         else{
-          printf("Error: Unexpexted Symbol\n");
+          printf("Error3: Unexpexted Symbol\n");
         }
       }
       else{
-        printf("Error: Unexpexted Symbol\n");
+        printf("Error4: Unexpexted Symbol\n");
       }
     }
     else{
-      printf("Error: Unexpexted Symbol\n");
+      printf("Error5: Unexpexted Symbol\n");
     }
   }
   else{
     //lookahead = lexan(fd);
-    PROG2(fd);
+    PROG2(fd, parent);
   }  
 }
 
 //PROG2 -> ( FDL1
-void PROG2(FILE *fd){
+void PROG2(FILE *fd, ast_node *parent){
   //lookahead = lexan(fd);
   if(lookahead == LPAREN){
     printf("MATCH: LPAREN\n");
+
+      ast_info *s;
+      ast_node *n;
+       
+      s = create_new_ast_node_info(LPAREN, 0, 0, 0, 0);
+      n = create_ast_node(s);
+
+      add_child_node(parent, n);
+
     lookahead = lexan(fd);
     FDL1(fd);
   }
   else{
-    printf("Error: Unexpexted Symbol");
+    printf("Error6: Unexpexted Symbol");
   }
 }
 
@@ -196,15 +237,15 @@ void FDL1(FILE *fd){
       printf("MATCH: LBRACE\n");
       lookahead = lexan(fd);
       BLOCK(fd);
-      lookahead = lexan(fd);
+      //lookahead = lexan(fd);
       //FDL(fd);
     }
     else{
-      printf("Error: Unexpexted Symbol");
+      printf("Error7: Unexpexted Symbol");
     }
   }
   else{
-    //printf("Error: Unexpexted Symbol");
+    //printf("Error8: Unexpexted Symbol");
   }
 }
 
@@ -224,7 +265,7 @@ void PDL(FILE *fd){
       PDL1(fd);
     }
     else{
-      printf("Error: Unexpexted Symbol");
+      printf("Error9: Unexpexted Symbol");
     }
   }
   else{
@@ -243,7 +284,7 @@ void PDL1(FILE *fd){
       PDL2(fd);
     }
     else{
-      printf("Error: Unexpexted Symbol");
+      printf("Error10: Unexpexted Symbol");
     }
   }
   else{
@@ -266,14 +307,15 @@ void PDL2(FILE *fd){
 //BLOCK -> VDL StmtList }
 void BLOCK(FILE *fd){
   VDL(fd);
-  //StmtList1(fd);
-  if (lookahead == RBRACE){
-    printf("MATCH: RBRACE\n");
-    lookahead = lexan(fd);
-  }
-  else{
-    printf("ERROR: Unexpexted Symbol");
-  }
+  //GET RID OF PROBBABLU-lookahead = lexan(fd);
+  StmtList(fd);
+  // if (lookahead == RBRACE){
+  //   printf("MATCH: RBRACE\n");
+  //   lookahead = lexan(fd);
+  // }
+  // else{
+  //   //printf("ERROR: Unexpexted Symbol");
+  // }
 }
 
 //VDL -> int id VDL1 | char id VDL1 | epsilon
@@ -292,7 +334,7 @@ void VDL(FILE *fd){
       VDL1(fd);
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR11: Unexpexted Symbol");
     }
   }
   else{
@@ -322,20 +364,20 @@ void VDL1(FILE *fd){
           VDL(fd);
         }
         else{
-          printf("ERROR: Unexpexted Symbol");
+          printf("ERROR12: Unexpexted Symbol");
         }
       }
       else{
-        printf("ERROR: Unexpexted Symbol");
+        printf("ERROR13: Unexpexted Symbol");
       }
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR14: Unexpexted Symbol");
     }
   }
   else{
     //Don't know if i need 
-    printf("ERROR: Unexpexted Symbol");
+    printf("ERROR15: Unexpexted Symbol");
   }
 }
 
@@ -345,34 +387,35 @@ void epsilon(FILE *fd){
 }
 
 void StmtList(FILE *fd){
+
   Stmt(fd);
-  //lookahead == lexan(fd);
-  //StmtList1(fd);
+  lookahead == lexan(fd);
+  StmtList1(fd);
 }
 
 void Stmt(FILE *fd){
+  //lookahead = lexan(fd);
   if(lookahead == SEMICOL){
     printf("MATCH: SEMICOL\n");
     lookahead = lexan(fd);
   }
 
   else if(lookahead == RETURN){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH1: KEYWORD.RETURN\n");
     lookahead = lexan(fd);
-    //Expr();
-    //lookahead = lexan(fd);
+    Expr(fd);
+    lookahead = lexan(fd);
     if (lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR16: Unexpexted Symbol\n");
     }
   }
-
-
+  
   else if(lookahead == READ){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.READ\n");
     lookahead = lexan(fd);
     if(lookahead == ID){
       printf("MATCH: ID.%s\n", lexbuf);
@@ -382,163 +425,452 @@ void Stmt(FILE *fd){
         lookahead = lexan(fd);
       }
       else{
-        printf("ERROR: Unexpexted Symbol");
+        printf("ERROR17: Unexpexted Symbol\n");
       }
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR18: Unexpexted Symbol\n");
     }
   }
 
 
   else if(lookahead == WRITE){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.WRITE\n");
     lookahead = lexan(fd);
     //Expr(fd);
-    //lookahead = lexan(fd);
+    lookahead = lexan(fd);
     if (lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR19: Unexpexted Symbol\n");
     }
   }
 
   else if(lookahead == WRITELN){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.WRITELN\n");
     lookahead = lexan(fd);
     if(lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR20: Unexpexted Symbol\n");
     }
   }
 
   else if(lookahead == BREAK){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.BREAK\n");
     lookahead = lexan(fd);
     if(lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR21: Unexpexted Symbol\n");
     }
   }
-
+  
   else if (lookahead == IF){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.IF\n");
     lookahead = lexan(fd);
     if(lookahead == LPAREN){
       printf("MATCH: LPAREN\n");
       lookahead = lexan(fd);
-      //Expr(fd);
-      //lookahead = lexan(fd);
-      if(lookahead == RPAREN){
+      Expr(fd);
+      printf("Before right paren\n");
+      // lookahead = lexan(fd);
+      if (lookahead == RPAREN){
         printf("MATCH: RPAREN\n");
         lookahead = lexan(fd);
-        //Stmt(fd);
-        //lookahead = lexan(fd);
+        Stmt(fd);
+        lookahead = lexan(fd);
         if(lookahead == ELSE){
-          printf("MATCH: KEYWORD.%s\n", lexbuf);
+          printf("MATCH: KEYWORD.ELSE\n");
           lookahead = lexan(fd);
-          //Stmt(fd);
-          //lookahead = lexan(fd);
+          Stmt(fd);
+          lookahead = lexan(fd);
         }
         else{
-          printf("ERROR: Unexpexted Symbol");
+          printf("ERROR22: Unexpexted Symbol\n");
         }
       }
       else{
-        printf("ERROR: Unexpexted Symbol");
+        printf("ERROR23: Unexpexted Symbol\n");
       }
     }
     else{
-    printf("ERROR: Unexpexted Symbol");
+    printf("ERROR24: Unexpexted Symbol\n");
     }
   }
 
   else if(lookahead == WHILE){
-    printf("MATCH: KEYWORD.%s\n", lexbuf);
+    printf("MATCH: KEYWORD.WHILE\n");
     lookahead = lexan(fd);
     if(lookahead == LPAREN){
       printf("MATCH: LPAREN\n");
       lookahead = lexan(fd);
-      //Expr(fd);
-      //lookahead = lexan(fd);
+      Expr(fd);
+      lookahead = lexan(fd);
       if(lookahead == RPAREN){
         printf("MATCH: RPAREN\n");
         lookahead = lexan(fd);
-        //Stmt(fd);
-        //lookahead = lexan(fd);
+        Stmt(fd);
+        lookahead = lexan(fd);
       }
       else{
-        printf("ERROR: Unexpexted Symbol");
+        printf("ERROR25: Unexpexted Symbol\n");
       }
     }
     else{
-      printf("ERROR: Unexpexted Symbol");
+      printf("ERROR26: Unexpexted Symbol\n");
     }
   }
 
-  else if(lookahead == RBRACE){
-    printf("MATCH: RBRACE\n");
+  else if(lookahead == LBRACE){
+    printf("MATCH: LBRACE\n");
     lookahead = lexan(fd);
-    BLOCK();
+    BLOCK(fd);
     lookahead = lexan(fd);
   }
 
   else{
-    Expr(fd):
+    Expr(fd);
     lookahead = lexan(fd);
     if(lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
     }
-    else{
-      printf("ERROR: Unexpexted Symbol");
-    }
+    // else{
+    //   printf("ERROR27: Unexpexted Symbol");
+    // }
   }
 }
 
-
-
-
-
-
-
-void FDL(FILE *fd){
-  if (lookahead == INT || lookahead == CHAR){
-    if(lookahead == INT){
-      printf("MATCH: INT\n");
+void StmtList1(FILE *fd){
+  if(lookahead == RBRACE){
+    printf("MATCH: RBRACE\n");
+    lookahead = lexan(fd);
+    if (lookahead == OR){
+      printf("MATCH: OR\n");
+      lookahead = lexan(fd);
     }
     else{
-      printf("MATCH: CHAR\n");
+      printf("ERROR28: Unexpexted Symbol\n");
     }
+  }
+  else{
+    StmtList(fd);
+  }
+}
+
+void Expr(FILE *fd){
+  E0(fd);
+}
+
+void E0(FILE *fd){
+  E1(fd);
+  lookahead = lexan(fd);
+  E0PRIME(fd);
+}
+
+void E0PRIME(FILE *fd){
+  //printf("in e0 prime\n");
+  if (lookahead == ASSIGN){
+    printf("MATCH: ASSIGN\n");
     lookahead = lexan(fd);
-    if(lookahead == ID){
-      printf("MATCH: ID.%s\n", lexbuf);
-      lookahead = lexan(fd);
-      if(lookahead == LPAREN){
-        printf("MATCH: LPAREN\n");
-        lookahead = lexan(fd);
-        FDL1(fd);
-      }
-      else{
-        printf("ERROR: Unexpexted Symbol");
-      }
+    Expr(fd);
+  }
+  else{
+    printf("in e0prime\n");
+    epsilon(fd);
+  }
+}
+
+void E1(FILE *fd){
+  E2(fd);
+  lookahead = lexan(fd);
+  E1PRIME(fd);
+}
+
+void E1PRIME(FILE *fd){
+  if (lookahead == OR){
+    printf("MATCH: OR\n");
+    lookahead = lexan(fd);
+    E2(fd);
+    lookahead = lexan(fd);
+    E1PRIME(fd);
+  }
+  else{
+    printf("in e1prime\n");
+    epsilon(fd);
+  }
+}
+
+void E2(FILE *fd){
+  E3(fd);
+  lookahead = lexan(fd);
+  E2PRIME(fd);
+}
+
+void E2PRIME(FILE *fd){
+  if(lookahead == AND){
+    printf("MATCH: AND\n");
+    lookahead = lexan(fd);
+    E3(fd);
+    lookahead = lexan(fd);
+    E2PRIME(fd);
+  }
+  else{
+    printf("in e2prime\n");
+    epsilon(fd);
+  }
+}
+
+void E3(FILE *fd){
+  E4(fd);
+  lookahead == lexan(fd);
+  E3PRIME(fd);
+}
+
+void E3PRIME(FILE *fd){
+  if (lookahead == EQ){
+    printf("MATCH: EQ\n");
+    lookahead = lexan(fd);
+    E4(fd);
+    lookahead = lexan(fd);
+    E3PRIME(fd);
+    }
+  else if(lookahead == NOTEQ){
+    printf("MATCH: NOTEQ\n");
+    lookahead = lexan(fd);
+    E4(fd);
+    lookahead = lexan(fd);
+    E3PRIME(fd);
+  }
+  else{
+    printf("in e3prime\n");
+    epsilon(fd);
+  }
+}
+
+void E4(FILE *fd){
+  E5(fd);
+  lookahead = lexan(fd);
+  E4PRIME(fd);
+}
+
+void E4PRIME(FILE *fd){
+  if(lookahead == LT){
+    printf("MATCH: LT\n");
+    lookahead = lexan(fd);
+    E5(fd);
+    lookahead = lexan(fd);
+    E4PRIME(fd);
+  }
+  else if(lookahead == LE){
+    printf("MATCH: LE\n");
+    lookahead = lexan(fd);
+    E5(fd);
+    lookahead = lexan(fd);
+    E4PRIME(fd);
+  }
+  else if(lookahead == GT){
+    printf("MATCH: GT\n");
+    lookahead = lexan(fd);
+    E5(fd);
+    lookahead = lexan(fd);
+    E4PRIME(fd);
+  }
+  else if(lookahead == GE){
+    printf("MATCH: GE\n");
+    lookahead = lexan(fd);
+    E5(fd);
+    lookahead = lexan(fd);
+    E4PRIME(fd);
+  }
+  else{
+    printf("in e4prime\n");
+    epsilon(fd);
+  }
+}
+
+  //E5 -> E6 E5'
+void E5(FILE *fd){
+  E6(fd);
+  lookahead = lexan(fd);
+  E5PRIME(fd);
+}
+
+//E5' -> + E6 E5' | -E6 E5' | epsilon
+void E5PRIME(FILE *fd){
+  if (lookahead == PLUS){
+    printf("MATCH: PLUS\n");
+    lookahead = lexan(fd);
+    E6(fd);
+    lookahead = lexan(fd);
+    E5PRIME(fd);
+  }
+  else if(lookahead == MINUS){
+    printf("MATCH: MINUS\n");
+    lookahead = lexan(fd);
+    E6(fd);
+    lookahead = lexan(fd);
+     E5PRIME(fd);
+  }
+  else{
+    printf("in e5prime\n");
+    epsilon(fd);
+  }
+}
+
+void E6(FILE *fd){
+  E7(fd);
+  lookahead = lexan(fd);
+  E6PRIME(fd);
+}
+
+void E6PRIME(FILE *fd){
+  if (lookahead == MULT){
+    printf("MATCH: MULT\n");
+    lookahead = lexan(fd);
+    E7(fd);
+    lookahead = lexan(fd);
+    E6PRIME(fd);
+  }
+  else if(lookahead == DIVIDE){
+    printf("MATCH: DIVIDE\n");
+    lookahead = lexan(fd);
+    E7(fd);
+    lookahead = lexan(fd);
+    E6PRIME(fd);
+  }
+  else{
+    printf("in e6prime\n");
+    epsilon(fd);
+  }
+}
+
+void E7(FILE *fd){
+  
+  if(lookahead == NOT){
+    printf("MATCH: NOT\n");
+    lookahead = lexan(fd);
+    E7(fd);
+  }
+  else if(lookahead == MINUS){
+    printf("MATCH: MINUS\n");
+    lookahead = lexan(fd);
+    E7(fd);
+  }
+  else{
+    E8(fd);
+  }
+}
+
+void E8(FILE *fd){
+
+  if(lookahead == NUM){
+    printf("MATCH: NUM.%c\n", lexbuf);
+    lookahead = lexan(fd);
+  }
+  else if(lookahead == LPAREN){
+    printf("MATCH: LPAREN\n");
+    lookahead = lexan(fd);
+    Expr(fd);
+    if (lookahead == RPAREN){
+      printf("MATCH: RPAREN\n");
+      lookahead = lexan(fd); //just added
     }
     else{
       printf("ERROR: Unexpexted Symbol");
     }
   }
   else{
+    if(lookahead == ID){
+      printf("MATCH: ID.%s\n", lexbuf);
+      lookahead = lexan(fd);
+      E8PRIME(fd);
+    }
+  }
+}
+
+void E8PRIME(FILE *fd){
+  if (lookahead == LPAREN){
+    printf("MATCH: LPAREN\n");
+    lookahead = lexan(fd);
+    ExprList(fd);
+    if (lookahead == RPAREN){
+      printf("MATCH: RPAREN\n");
+      lookahead = lexan(fd); //just added
+    }
+  }
+  else if(lookahead == LBRACK){
+    printf("MATCH: LBRACK\n");
+      lookahead = lexan(fd);
+      Expr(fd);
+      if(lookahead == RBRACK){
+        printf("MATCH: RBRACK\n");
+        lookahead = lexan(fd);
+      }
+    }
+  else{
+    printf("at epsilon\n");
     epsilon(fd);
   }
 }
+
+void ExprList(FILE *fd){
+  Expr(fd);
+  ELPRIME(fd);
+  printf("in exprlist\n");
+  epsilon(fd);
+}
+
+void ELPRIME(FILE *fd){
+  if(lookahead == COMMA){
+    printf("MATCH: COMMA\n");
+    lookahead = lexan(fd);
+    ExprList(fd);
+  }
+  else{
+    printf("in exprlist\n");
+    epsilon(fd);
+  }
+}
+
+
+
+// void FDL(FILE *fd){
+//   if (lookahead == INT || lookahead == CHAR){
+//     if(lookahead == INT){
+//       printf("MATCH: INT\n");
+//     }
+//     else{
+//       printf("MATCH: CHAR\n");
+//     }
+//     lookahead = lexan(fd);
+//     if(lookahead == ID){
+//       printf("MATCH: ID.%s\n", lexbuf);
+//       lookahead = lexan(fd);
+//       if(lookahead == LPAREN){
+//         printf("MATCH: LPAREN\n");
+//         lookahead = lexan(fd);
+//         FDL1(fd);
+//       }
+//       else{
+//         printf("ERROR: Unexpexted Symbol");
+//       }
+//     }
+//     else{
+//       printf("ERROR: Unexpexted Symbol");
+//     }
+//   }
+//   else{
+//     epsilon(fd);
+//   }
+// }
 
   //E5 -> E6 E5'
 // void E5(FILE *fd){

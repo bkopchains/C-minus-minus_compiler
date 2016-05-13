@@ -159,17 +159,6 @@ while(character != DONE && character != LEXERROR)
     }
   }
 
-  else if(character == '!'){
-    if((character = fgetc(fd)) == '='){
-      return NOTEQ;
-      }
-    
-    else{
-      ungetc(character, fd);
-      return NOT;
-    }
-  }
-
 
   else if(character == ';'){
     return SEMICOL;
@@ -219,8 +208,16 @@ while(character != DONE && character != LEXERROR)
     return RBRACK;
   }
 
-
-
+  else if(character = '!'){
+    if((character = fgetc(fd)) == '='){
+      return NOTEQ;
+      }
+    
+    else{
+      ungetc(character, fd);
+      return NOT;
+    }
+  }
   
  //Determines the correct keyword and returns it 
  else if (isalpha(character)){
