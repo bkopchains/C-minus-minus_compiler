@@ -111,8 +111,6 @@ static void parser_error(char *err_string) {
  *     parent: the parent ast node  (it should be a ROOT)
  */
 static void program(FILE *fd, ast_node *parent) {
-
-
   if(lookahead == INT || lookahead == CHAR){
     if(lookahead == INT){
       printf("MATCH: INT\n");
@@ -205,6 +203,8 @@ void FDL1(FILE *fd){
       BLOCK(fd);
       lookahead = lexan(fd);
       FDL(fd);
+      printf("RETURNED TO FDL1");
+      program(fd, lookahead);
     }
     else{
       printf("Error7: Unexpexted Symbol");
@@ -276,6 +276,7 @@ void PDL2(FILE *fd){
 void BLOCK(FILE *fd){
   printf("IN BLOCK\n");
   VDL(fd);
+  printf("IN BLOCK BEFORE STMLIST");
   StmtList(fd);
 }
 
@@ -307,6 +308,7 @@ void VDL(FILE *fd){
 //VDL1 -> ; VDL | [ num ] ; VDL
 void VDL1(FILE *fd){
   if (lookahead == SEMICOL){
+    printf("in vdl1 semicol");
     printf("MATCH: SEMICOL\n");
     lookahead = lexan(fd);
     VDL(fd);
@@ -349,13 +351,14 @@ void epsilon(FILE *fd){
 }
 
 void StmtList(FILE *fd){
-
+  printf("in stmt list");
   Stmt(fd);
-  lookahead == lexan(fd);
+  //lookahead = lexan(fd);
   StmtList1(fd);
 }
 
 void Stmt(FILE *fd){
+  //printf("STMT semicol\n");
   //lookahead = lexan(fd);
   if(lookahead == SEMICOL){
     printf("MATCH: SEMICOL\n");
@@ -366,7 +369,7 @@ void Stmt(FILE *fd){
     printf("MATCH1: KEYWORD.RETURN\n");
     lookahead = lexan(fd);
     Expr(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     if (lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
@@ -399,8 +402,8 @@ void Stmt(FILE *fd){
   else if(lookahead == WRITE){
     printf("MATCH: KEYWORD.WRITE\n");
     lookahead = lexan(fd);
-    //Expr(fd);
-    lookahead = lexan(fd);
+    Expr(fd);
+    //lookahead = lexan(fd);
     if (lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
       lookahead = lexan(fd);
@@ -440,18 +443,18 @@ void Stmt(FILE *fd){
     if(lookahead == LPAREN){
       printf("MATCH: LPAREN\n");
       lookahead = lexan(fd);
-      //Expr(fd);
-      // lookahead = lexan(fd);
+      Expr(fd);
+      //lookahead = lexan(fd);
       if (lookahead == RPAREN){
         printf("MATCH: RPAREN\n");
         lookahead = lexan(fd);
         Stmt(fd);
-        lookahead = lexan(fd);
+        //lookahead = lexan(fd);
         if(lookahead == ELSE){
           printf("MATCH: KEYWORD.ELSE\n");
-          lookahead = lexan(fd);
+          //lookahead = lexan(fd);
           Stmt(fd);
-          lookahead = lexan(fd);
+          //lookahead = lexan(fd);
         }
         else{
           printf("ERROR22: Unexpexted Symbol\n");
@@ -472,7 +475,7 @@ void Stmt(FILE *fd){
     if(lookahead == LPAREN){
       printf("MATCH: LPAREN\n");
       lookahead = lexan(fd);
-      //Expr(fd);
+      Expr(fd);
       lookahead = lexan(fd);
       if(lookahead == RPAREN){
         printf("MATCH: RPAREN\n");
@@ -497,7 +500,7 @@ void Stmt(FILE *fd){
   }
 
   else{
-    //Expr(fd);
+    Expr(fd);
     lookahead = lexan(fd);
     if(lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
@@ -509,14 +512,7 @@ void Stmt(FILE *fd){
 void StmtList1(FILE *fd){
   if(lookahead == RBRACE){
     printf("MATCH: RBRACE\n");
-    lookahead = lexan(fd);
-    if (lookahead == OR){
-      printf("MATCH: OR\n");
-      lookahead = lexan(fd);
-    }
-    else{
-      printf("ERROR28: Unexpexted Symbol\n");
-    }
+    //lookahead = lexan(fd);
   }
   else{
     StmtList(fd);
@@ -529,7 +525,8 @@ void Expr(FILE *fd){
 
 void E0(FILE *fd){
   E1(fd);
-  lookahead = lexan(fd);
+  printf("in e0\n");
+  //lookahead = lexan(fd);
   E0PRIME(fd);
 }
 
@@ -547,7 +544,8 @@ void E0PRIME(FILE *fd){
 
 void E1(FILE *fd){
   E2(fd);
-  lookahead = lexan(fd);
+  printf("in e1\n");
+  //lookahead = lexan(fd);
   E1PRIME(fd);
 }
 
@@ -556,7 +554,7 @@ void E1PRIME(FILE *fd){
     printf("MATCH: OR\n");
     lookahead = lexan(fd);
     E2(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E1PRIME(fd);
   }
   else{
@@ -567,7 +565,8 @@ void E1PRIME(FILE *fd){
 
 void E2(FILE *fd){
   E3(fd);
-  lookahead = lexan(fd);
+  printf("in e2\n");
+  //lookahead = lexan(fd);
   E2PRIME(fd);
 }
 
@@ -576,7 +575,7 @@ void E2PRIME(FILE *fd){
     printf("MATCH: AND\n");
     lookahead = lexan(fd);
     E3(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E2PRIME(fd);
   }
   else{
@@ -587,7 +586,8 @@ void E2PRIME(FILE *fd){
 
 void E3(FILE *fd){
   E4(fd);
-  lookahead == lexan(fd);
+  printf("in e3\n");
+  //lookahead == lexan(fd);
   E3PRIME(fd);
 }
 
@@ -596,14 +596,14 @@ void E3PRIME(FILE *fd){
     printf("MATCH: EQ\n");
     lookahead = lexan(fd);
     E4(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E3PRIME(fd);
     }
   else if(lookahead == NOTEQ){
     printf("MATCH: NOTEQ\n");
     lookahead = lexan(fd);
     E4(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E3PRIME(fd);
   }
   else{
@@ -614,7 +614,8 @@ void E3PRIME(FILE *fd){
 
 void E4(FILE *fd){
   E5(fd);
-  lookahead = lexan(fd);
+  printf("in e4\n");
+  //lookahead = lexan(fd);
   E4PRIME(fd);
 }
 
@@ -623,28 +624,28 @@ void E4PRIME(FILE *fd){
     printf("MATCH: LT\n");
     lookahead = lexan(fd);
     E5(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E4PRIME(fd);
   }
   else if(lookahead == LE){
     printf("MATCH: LE\n");
     lookahead = lexan(fd);
     E5(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E4PRIME(fd);
   }
   else if(lookahead == GT){
     printf("MATCH: GT\n");
     lookahead = lexan(fd);
     E5(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E4PRIME(fd);
   }
   else if(lookahead == GE){
     printf("MATCH: GE\n");
     lookahead = lexan(fd);
     E5(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E4PRIME(fd);
   }
   else{
@@ -656,7 +657,7 @@ void E4PRIME(FILE *fd){
   //E5 -> E6 E5'
 void E5(FILE *fd){
   E6(fd);
-  lookahead = lexan(fd);
+  //lookahead = lexan(fd);
   E5PRIME(fd);
 }
 
@@ -667,15 +668,15 @@ void E5PRIME(FILE *fd){
     printf("MATCH: PLUS\n");
     lookahead = lexan(fd);
     E6(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E5PRIME(fd);
   }
   else if(lookahead == MINUS){
     printf("MATCH: MINUS\n");
     lookahead = lexan(fd);
     E6(fd);
-    lookahead = lexan(fd);
-     E5PRIME(fd);
+    //lookahead = lexan(fd);
+    E5PRIME(fd);
   }
   else{
     printf("at e5prime epsilon\n");
@@ -685,7 +686,8 @@ void E5PRIME(FILE *fd){
 
 void E6(FILE *fd){
   E7(fd);
-  lookahead = lexan(fd);
+  printf("in e6\n");
+  //lookahead = lexan(fd);
   E6PRIME(fd);
 }
 
@@ -694,24 +696,23 @@ void E6PRIME(FILE *fd){
     printf("MATCH: MULT\n");
     lookahead = lexan(fd);
     E7(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E6PRIME(fd);
   }
   else if(lookahead == DIVIDE){
     printf("MATCH: DIVIDE\n");
     lookahead = lexan(fd);
     E7(fd);
-    lookahead = lexan(fd);
+    //lookahead = lexan(fd);
     E6PRIME(fd);
   }
   else{
-    printf("at e0prime epsilon\n");
+    printf("at e6prime epsilon\n");
     epsilon(fd);
   }
 }
 
 void E7(FILE *fd){
-  
   if(lookahead == NOT){
     printf("MATCH: NOT\n");
     lookahead = lexan(fd);
@@ -723,12 +724,13 @@ void E7(FILE *fd){
     E7(fd);
   }
   else{
+    //lookahead = lexan(fd);
+    printf("HOW DOES THIS WORK\n");
     E8(fd);
   }
 }
 
 void E8(FILE *fd){
-
   if(lookahead == NUM){
     printf("MATCH: NUM.%d\n", tokenval);
     lookahead = lexan(fd);
