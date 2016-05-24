@@ -15,8 +15,8 @@
 
 static void program(FILE *fd, ast_node *parent);
 static void parser_error(char *err_string);
-void PROG1(FILE *fd, ast_node *parent);
-void PROG2(FILE *fd, ast_node *parent);
+void PROG1(FILE *fd);
+void PROG2(FILE *fd);
 void FDL1(FILE *fd);
 void PDL(FILE *fd);
 void PDL1(FILE *fd);
@@ -116,38 +116,17 @@ static void program(FILE *fd, ast_node *parent) {
   if(lookahead == INT || lookahead == CHAR){
     if(lookahead == INT){
       printf("MATCH: INT\n");
-
-      ast_info *s;
-      ast_node *n;
-      s = create_new_ast_node_info(1, 0, 0, 0, 0);
-      n = create_ast_node(s);
-      add_child_node(parent, n);
-
     }
     else{
       printf("MATCH: CHAR\n");
-
-      ast_info *s;
-      ast_node *n;
-      s = create_new_ast_node_info(2, 0, 0, 0, 0);
-      n = create_ast_node(s);
-      add_child_node(parent, n);
-
       lookahead = lexan(fd);
-      PROG1(fd, parent);
+      PROG1(fd);
     }
     lookahead = lexan(fd);
     if(lookahead == ID){
       printf("MATCH: ID.%s\n", lexbuf);
-
-      ast_info *s;
-      ast_node *n;
-      s = create_new_ast_node_info(5, 0, 0, 0, 0);
-      n = create_ast_node(s);
-      add_child_node(parent, n);
-
       lookahead = lexan(fd);
-      PROG1(fd, parent);
+      PROG1(fd);
     }
     else{
       printf("Error1: Unexpexted Symbol\n");
@@ -161,7 +140,7 @@ static void program(FILE *fd, ast_node *parent) {
 
 
 //PROG1 -> ; PROG| [num]; PROG | PROG2;
-void PROG1(FILE *fd, ast_node *parent){
+void PROG1(FILE *fd){
 
   if(lookahead == SEMICOL){
     printf("MATCH: SEMICOL\n");
@@ -196,25 +175,16 @@ void PROG1(FILE *fd, ast_node *parent){
     }
   }
   else{
-    PROG2(fd, parent);
+    PROG2(fd);
   }  
 }
 
 
 //PROG2 -> ( FDL1
-void PROG2(FILE *fd, ast_node *parent){
+void PROG2(FILE *fd){
   //lookahead = lexan(fd);
   if(lookahead == LPAREN){
     printf("MATCH: LPAREN\n");
-
-
-    ast_info *t;
-    ast_node *e;
-    t = create_new_ast_node_info(21, 0, 0, 0, 0);
-    e = create_ast_node(t);
-    add_child_node(parent, e);
-
-
     lookahead = lexan(fd);
     FDL1(fd);
   }
@@ -231,7 +201,7 @@ void FDL1(FILE *fd){
     lookahead = lexan(fd);
     if (lookahead == LBRACE){
       printf("MATCH: LBRACE\n");
-      //lookahead = lexan(fd);
+      lookahead = lexan(fd);
       BLOCK(fd);
       lookahead = lexan(fd);
       FDL(fd);
@@ -265,6 +235,7 @@ void PDL(FILE *fd){
     }
   }
   else{
+    printf("at PDL epsilon");
     epsilon(fd);
   }
 }
@@ -296,13 +267,14 @@ void PDL2(FILE *fd){
     PDL(fd);
   }
   else{
-
+    printf("at pdl2 epsilon");
     epsilon(fd);
   }
 }
 
 //BLOCK -> VDL StmtList }
 void BLOCK(FILE *fd){
+  printf("IN BLOCK\n");
   VDL(fd);
   StmtList(fd);
 }
@@ -327,6 +299,7 @@ void VDL(FILE *fd){
     }
   }
   else{
+    printf("at vdl epsilon\n");
     epsilon(fd);
   }
 }
@@ -392,7 +365,7 @@ void Stmt(FILE *fd){
   else if(lookahead == RETURN){
     printf("MATCH1: KEYWORD.RETURN\n");
     lookahead = lexan(fd);
-    //Expr(fd);
+    Expr(fd);
     lookahead = lexan(fd);
     if (lookahead == SEMICOL){
       printf("MATCH: SEMICOL\n");
@@ -567,7 +540,7 @@ void E0PRIME(FILE *fd){
     Expr(fd);
   }
   else{
-    printf("in e0prime\n");
+    printf("at e0prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -587,7 +560,7 @@ void E1PRIME(FILE *fd){
     E1PRIME(fd);
   }
   else{
-    printf("in e1prime\n");
+    printf("at e1prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -607,7 +580,7 @@ void E2PRIME(FILE *fd){
     E2PRIME(fd);
   }
   else{
-    printf("in e2prime\n");
+    printf("at e2prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -634,7 +607,7 @@ void E3PRIME(FILE *fd){
     E3PRIME(fd);
   }
   else{
-    printf("in e3prime\n");
+    printf("at e3prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -675,7 +648,7 @@ void E4PRIME(FILE *fd){
     E4PRIME(fd);
   }
   else{
-    printf("in e4prime\n");
+    printf("at e4prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -690,6 +663,7 @@ void E5(FILE *fd){
 //E5' -> + E6 E5' | -E6 E5' | epsilon
 void E5PRIME(FILE *fd){
   if (lookahead == PLUS){
+    printf("RIGHT BEFORE PLUS in e5 prime\n");
     printf("MATCH: PLUS\n");
     lookahead = lexan(fd);
     E6(fd);
@@ -704,7 +678,7 @@ void E5PRIME(FILE *fd){
      E5PRIME(fd);
   }
   else{
-    printf("in e5prime\n");
+    printf("at e5prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -731,7 +705,7 @@ void E6PRIME(FILE *fd){
     E6PRIME(fd);
   }
   else{
-    printf("in e6prime\n");
+    printf("at e0prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -800,7 +774,7 @@ void E8PRIME(FILE *fd){
       }
     }
   else{
-    printf("at epsilon\n");
+    printf("at e8prime epsilon\n");
     epsilon(fd);
   }
 }
@@ -850,6 +824,7 @@ void FDL(FILE *fd){
     }
   }
   else{
+    printf("at fdl epsilon\n");
     epsilon(fd);
   }
 }
