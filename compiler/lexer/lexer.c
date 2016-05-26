@@ -217,9 +217,6 @@ while(character != DONE && character != LEXERROR)
   else if(character == ']'){
     return RBRACK;
   }
-
-
-
   
  //Determines the correct keyword and returns it 
  else if (isalpha(character)){

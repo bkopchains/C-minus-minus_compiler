@@ -476,7 +476,7 @@ void Stmt(FILE *fd){
       printf("MATCH: LPAREN\n");
       lookahead = lexan(fd);
       Expr(fd);
-      lookahead = lexan(fd);
+      //lookahead = lexan(fd);
       if(lookahead == RPAREN){
         printf("MATCH: RPAREN\n");
         lookahead = lexan(fd);

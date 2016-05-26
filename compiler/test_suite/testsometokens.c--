@@ -2,12 +2,12 @@ int afunction(int a, int b) {
   return a+b;
 }
 
-// this is a test
+
 int main() {
   int x; 
   int y;
   char z;
-  int arr[10];
+  char t[17];
   int i;
   /*
      this is a longish
@@ -15,6 +15,7 @@ int main() {
      for testing
    */
 
+  
   i = 0;
   while (1) {
     if (i >= 10) {
@@ -26,6 +27,7 @@ int main() {
     arr[i] = i;
     i = i + 1;
   }
+
 
   x = 1 + 2 - 3 * 4 / 5; // another comment
   read y;

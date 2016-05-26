@@ -1,5 +1,4 @@
 int a;
-int b[10];
 
 int test0() {
   return 0;
@@ -15,6 +14,4 @@ int test2(int one, int two) {
 
 int main() {
   write test0();
-  write test1(100);
-  write test2(100,200);
 }
